@@ -193,3 +193,21 @@ function highlightSearchTerm(text, searchTerm) {
     const regex = new RegExp(`(${searchTerm})`, 'gi');
     return text.replace(regex, '<mark>$1</mark>');
 }
+
+// Função para resetar todo o sistema
+function resetAll() {
+    if (confirm('⚠️ ATENÇÃO: Isso irá deletar TODAS as tarefas e resetar o sistema. Tem certeza?')) {
+        if (confirm('Última confirmação: Realmente deseja apagar tudo?')) {
+            tasks = [];
+            taskIdCounter = 1;
+            localStorage.removeItem('teamwork-tasks');
+            localStorage.removeItem('teamwork-counter');
+            filterInput.value = '';
+            renderTasks();
+            alert('✅ Sistema resetado com sucesso!');
+        }
+    }
+}
+
+// Event listener para botão de reset
+document.getElementById('resetAllBtn').addEventListener('click', resetAll);
