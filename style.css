@@ -272,3 +272,24 @@ mark {
     border-radius: 3px;
     font-weight: bold;
 }
+
+.tasks-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+.btn-reset {
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-reset:hover {
+    background-color: #5a6268;
+}
