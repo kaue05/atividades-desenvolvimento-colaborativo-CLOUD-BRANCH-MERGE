@@ -32,6 +32,67 @@
             <button id="addTaskBtn" class="btn-primary">Adicionar Tarefa</button>
         </section>
 
+        <section class="stats-section">
+    <h2>📊 Estatísticas</h2>
+    <div class="stats-grid">
+        <div class="stat-card stat-total">
+            <div class="stat-icon">📋</div>
+            <div class="stat-content">
+                <div class="stat-number" id="totalTasks">0</div>
+                <div class="stat-label">Total de Tarefas</div>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-completed">
+            <div class="stat-icon">✅</div>
+            <div class="stat-content">
+                <div class="stat-number" id="completedTasks">0</div>
+                <div class="stat-label">Concluídas</div>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-pending">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-content">
+                <div class="stat-number" id="pendingTasks">0</div>
+                <div class="stat-label">Pendentes</div>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-progress">
+            <div class="stat-icon">📈</div>
+            <div class="stat-content">
+                <div class="stat-number" id="progressPercentage">0%</div>
+                <div class="stat-label">Progresso</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="priority-stats">
+        <h3>Por Prioridade:</h3>
+        <div class="priority-bars">
+            <div class="priority-bar">
+                <span class="priority-label">🔴 Alta: <strong id="highPriorityCount">0</strong></span>
+                <div class="bar-container">
+                    <div class="bar bar-high" id="highPriorityBar"></div>
+                </div>
+            </div>
+            <div class="priority-bar">
+                <span class="priority-label">🟡 Média: <strong id="mediumPriorityCount">0</strong></span>
+                <div class="bar-container">
+                    <div class="bar bar-medium" id="mediumPriorityBar"></div>
+                </div>
+            </div>
+            <div class="priority-bar">
+                <span class="priority-label">🟢 Baixa: <strong id="lowPriorityCount">0</strong></span>
+                <div class="bar-container">
+                    <div class="bar bar-low" id="lowPriorityBar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
         <section class="tasks-section">
             <h2>Minhas Tarefas</h2>
             <div class="filter-section">

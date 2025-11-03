@@ -27,12 +27,13 @@ function addTask() {
     }
 
     const task = {
-        id: taskIdCounter++,
-        title: title,
-        description: description,
-        priority: priority,
-        createdAt: new Date().toLocaleString('pt-BR')
-    };
+    id: taskIdCounter++,
+    title: title,
+    description: description,
+    priority: priority,
+    completed: false,  // Adicionar esta linha
+    createdAt: new Date().toLocaleString('pt-BR')
+};
 
     tasks.push(task);
 
@@ -132,20 +133,22 @@ function renderTasks() {
 // Sistema de filtro de tarefas
 const filterInput = document.getElementById('filterInput');
 
+// Sistema de filtro de tarefas
 function filterTasks() {
     const searchTerm = filterInput.value.toLowerCase().trim();
-
+    
     if (!searchTerm) {
         renderTasks();
         return;
     }
-
+    
     const filteredTasks = tasks.filter(task => {
         const titleMatch = task.title.toLowerCase().includes(searchTerm);
         const descriptionMatch = task.description.toLowerCase().includes(searchTerm);
-        return titleMatch || descriptionMatch;
+        const priorityMatch = task.priority.toLowerCase().includes(searchTerm);
+        return titleMatch || descriptionMatch || priorityMatch;
     });
-
+    
     // Renderizar apenas tarefas filtradas
     if (filteredTasks.length === 0) {
         tasksList.innerHTML = `
@@ -156,18 +159,17 @@ function filterTasks() {
         `;
         return;
     }
-
+    
     tasksList.innerHTML = filteredTasks.map(task => `
-        <div class="task-card">
-            <h3>${task.title}</h3>
-            <p>${task.description || 'Sem descrição'}</p>
-            <small style="color: #999;">Criado em: ${task.createdAt}</small>
-            <div class="task-actions">
-                <button class="btn-delete" onclick="deleteTask(${task.id})">🗑️ Excluir</button>
+        <div class="task-card ${getPriorityClass(task.priority)} ${task.completed ? 'completed' : ''}">
+            <div class="task-header">
+                <div class="task-priority">${getPriorityIcon(task.priority)} ${task.priority.toUpperCase()}</div>
+                <label class="checkbox-container">
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTaskStatus(${task.id})">
+                    <span class="checkmark"></span>
+                </label>
             </div>
-        </div>
-    `).join('');
-}
+            <h3>${task.title}</h3>
 
 filterInput.addEventListener('input', filterTasks);
 
@@ -182,3 +184,102 @@ taskTitle.addEventListener('keypress', (e) => {
 
 // Renderizar tarefas ao iniciar
 renderTasks();
+
+<p>${task.description || 'Sem descrição'}</p>
+            <small style="color: #999;">Criado em: ${task.createdAt}</small>
+            <div class="task-actions">
+                <button class="btn-delete" onclick="deleteTask(${task.id})">🗑️ Excluir</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Função para destacar termo buscado
+function highlightSearchTerm(text, searchTerm) {
+    if (!searchTerm) return text;
+    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+}
+
+// Função para alternar status da tarefa
+function toggleTaskStatus(id) {
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+        task.completed = !task.completed;
+        
+        // Verificar se há filtro ativo
+        const filterValue = filterInput.value;
+        if (filterValue.trim()) {
+            filterTasks();
+        } else {
+            renderTasks();
+        }
+        
+        // Salvar no localStorage
+        saveTasks();
+    }
+}
+
+// Função para salvar tarefas no localStorage
+function saveTasks() {
+    localStorage.setItem('teamwork-tasks', JSON.stringify(tasks));
+    localStorage.setItem('teamwork-counter', taskIdCounter);
+}
+
+// Função para carregar tarefas do localStorage
+function loadTasks() {
+    const savedTasks = localStorage.getItem('teamwork-tasks');
+    const savedCounter = localStorage.getItem('teamwork-counter');
+    
+    if (savedTasks) {
+        tasks = JSON.parse(savedTasks);
+    }
+    
+    if (savedCounter) {
+        taskIdCounter = parseInt(savedCounter);
+    }
+    
+    renderTasks();
+}
+
+// Modificar função addTask para salvar automaticamente
+const originalAddTask = addTask;
+window.addTask = function() {
+    originalAddTask();
+    saveTasks();
+};
+
+// Modificar função deleteTask para salvar automaticamente
+const originalDeleteTask = deleteTask;
+window.deleteTask = function(id) {
+    const taskElement = event?.target?.closest('.task-card');
+    
+    if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
+        if (taskElement) {
+            taskElement.classList.add('deleting');
+            setTimeout(() => {
+                tasks = tasks.filter(task => task.id !== id);
+                
+                const filterValue = filterInput.value;
+                if (filterValue.trim()) {
+                    filterTasks();
+                } else {
+                    renderTasks();
+                }
+                saveTasks();
+            }, 300);
+        } else {
+            tasks = tasks.filter(task => task.id !== id);
+            const filterValue = filterInput.value;
+            if (filterValue.trim()) {
+                filterTasks();
+            } else {
+                renderTasks();
+            }
+            saveTasks();
+        }
+    }
+};
+
+// Carregar tarefas ao iniciar
+loadTasks();
