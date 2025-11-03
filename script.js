@@ -27,12 +27,13 @@ function addTask() {
     }
 
     const task = {
-        id: taskIdCounter++,
-        title: title,
-        description: description,
-        priority: priority,
-        createdAt: new Date().toLocaleString('pt-BR')
-    };
+    id: taskIdCounter++,
+    title: title,
+    description: description,
+    priority: priority,
+    completed: false,  // Adicionar esta linha
+    createdAt: new Date().toLocaleString('pt-BR')
+};
 
     tasks.push(task);
 
@@ -99,6 +100,7 @@ function deleteTask(id) {
 }
 
 // Função para renderizar tarefas
+// Função para renderizar tarefas
 function renderTasks() {
     if (tasks.length === 0) {
         tasksList.innerHTML = `
@@ -109,10 +111,16 @@ function renderTasks() {
         `;
         return;
     }
-
+    
     tasksList.innerHTML = tasks.map(task => `
-        <div class="task-card ${getPriorityClass(task.priority)}">
-            <div class="task-priority">${getPriorityIcon(task.priority)} ${task.priority.toUpperCase()}</div>
+        <div class="task-card ${getPriorityClass(task.priority)} ${task.completed ? 'completed' : ''}">
+            <div class="task-header">
+                <div class="task-priority">${getPriorityIcon(task.priority)} ${task.priority.toUpperCase()}</div>
+                <label class="checkbox-container">
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTaskStatus(${task.id})">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
             <h3>${task.title}</h3>
             <p>${task.description || 'Sem descrição'}</p>
             <small style="color: #999;">Criado em: ${task.createdAt}</small>
@@ -122,7 +130,6 @@ function renderTasks() {
         </div>
     `).join('');
 }
-
 // Sistema de filtro de tarefas
 const filterInput = document.getElementById('filterInput');
 
@@ -211,3 +218,138 @@ function resetAll() {
 
 // Event listener para botão de reset
 document.getElementById('resetAllBtn').addEventListener('click', resetAll);
+// Função para alternar status da tarefa
+function toggleTaskStatus(id) {
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+        task.completed = !task.completed;
+        
+        // Verificar se há filtro ativo
+        const filterValue = filterInput.value;
+        if (filterValue.trim()) {
+            filterTasks();
+        } else {
+            renderTasks();
+        }
+        
+        // Salvar no localStorage
+        saveTasks();
+    }
+}
+
+// Função para salvar tarefas no localStorage
+function saveTasks() {
+    localStorage.setItem('teamwork-tasks', JSON.stringify(tasks));
+    localStorage.setItem('teamwork-counter', taskIdCounter);
+}
+
+// Função para carregar tarefas do localStorage
+function loadTasks() {
+    const savedTasks = localStorage.getItem('teamwork-tasks');
+    const savedCounter = localStorage.getItem('teamwork-counter');
+    
+    if (savedTasks) {
+        tasks = JSON.parse(savedTasks);
+    }
+    
+    if (savedCounter) {
+        taskIdCounter = parseInt(savedCounter);
+    }
+    
+    renderTasks();
+}
+
+// Modificar função addTask para salvar automaticamente
+const originalAddTask = addTask;
+window.addTask = function() {
+    originalAddTask();
+    saveTasks();
+};
+
+// Modificar função deleteTask para salvar automaticamente
+const originalDeleteTask = deleteTask;
+window.deleteTask = function(id) {
+    const taskElement = event?.target?.closest('.task-card');
+    
+    if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
+        if (taskElement) {
+            taskElement.classList.add('deleting');
+            setTimeout(() => {
+                tasks = tasks.filter(task => task.id !== id);
+                
+                const filterValue = filterInput.value;
+                if (filterValue.trim()) {
+                    filterTasks();
+                } else {
+                    renderTasks();
+                }
+                saveTasks();
+            }, 300);
+        } else {
+            tasks = tasks.filter(task => task.id !== id);
+            const filterValue = filterInput.value;
+            if (filterValue.trim()) {
+                filterTasks();
+            } else {
+                renderTasks();
+            }
+            saveTasks();
+        }
+    }
+};
+
+// Carregar tarefas ao iniciar
+loadTasks();
+
+
+// Função para atualizar estatísticas
+function updateStatistics() {
+    const total = tasks.length;
+    const completed = tasks.filter(t => t.completed).length;
+    const pending = total - completed;
+    const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+    
+    // Atualizar cards principais
+    document.getElementById('totalTasks').textContent = total;
+    document.getElementById('completedTasks').textContent = completed;
+    document.getElementById('pendingTasks').textContent = pending;
+    document.getElementById('progressPercentage').textContent = progress + '%';
+    
+    // Contar por prioridade
+    const highPriority = tasks.filter(t => t.priority === 'alta').length;
+    const mediumPriority = tasks.filter(t => t.priority === 'media').length;
+    const lowPriority = tasks.filter(t => t.priority === 'baixa').length;
+    
+    // Atualizar contadores de prioridade
+    document.getElementById('highPriorityCount').textContent = highPriority;
+    document.getElementById('mediumPriorityCount').textContent = mediumPriority;
+    document.getElementById('lowPriorityCount').textContent = lowPriority;
+    
+    // Calcular porcentagens para as barras
+    const maxCount = Math.max(highPriority, mediumPriority, lowPriority, 1);
+    const highPercent = (highPriority / maxCount) * 100;
+    const mediumPercent = (mediumPriority / maxCount) * 100;
+    const lowPercent = (lowPriority / maxCount) * 100;
+    
+    // Atualizar barras de prioridade
+    document.getElementById('highPriorityBar').style.width = highPercent + '%';
+    document.getElementById('mediumPriorityBar').style.width = mediumPercent + '%';
+    document.getElementById('lowPriorityBar').style.width = lowPercent + '%';
+}
+
+// Modificar renderTasks para atualizar estatísticas
+const originalRenderTasks = renderTasks;
+window.renderTasks = function() {
+    originalRenderTasks();
+    updateStatistics();
+};
+
+// Modificar filterTasks para não atualizar estatísticas (mostra estatísticas gerais)
+const originalFilterTasks = filterTasks;
+window.filterTasks = function() {
+    originalFilterTasks();
+    updateStatistics(); // Mantém estatísticas gerais mesmo com filtro
+};
+
+// Atualizar estatísticas ao carregar
+updateStatistics();
