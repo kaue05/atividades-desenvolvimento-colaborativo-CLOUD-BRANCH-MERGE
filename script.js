@@ -74,6 +74,48 @@ function renderTasks() {
     `).join('');
 }
 
+// Sistema de filtro de tarefas
+const filterInput = document.getElementById('filterInput');
+
+function filterTasks() {
+    const searchTerm = filterInput.value.toLowerCase().trim();
+
+    if (!searchTerm) {
+        renderTasks();
+        return;
+    }
+
+    const filteredTasks = tasks.filter(task => {
+        const titleMatch = task.title.toLowerCase().includes(searchTerm);
+        const descriptionMatch = task.description.toLowerCase().includes(searchTerm);
+        return titleMatch || descriptionMatch;
+    });
+
+    // Renderizar apenas tarefas filtradas
+    if (filteredTasks.length === 0) {
+        tasksList.innerHTML = `
+            <div class="empty-state">
+                <p>🔍 Nenhuma tarefa encontrada</p>
+                <p style="font-size: 14px;">Tente buscar por outro termo</p>
+            </div>
+        `;
+        return;
+    }
+
+    tasksList.innerHTML = filteredTasks.map(task => `
+        <div class="task-card">
+            <h3>${task.title}</h3>
+            <p>${task.description || 'Sem descrição'}</p>
+            <small style="color: #999;">Criado em: ${task.createdAt}</small>
+            <div class="task-actions">
+                <button class="btn-delete" onclick="deleteTask(${task.id})">🗑️ Excluir</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+filterInput.addEventListener('input', filterTasks);
+
 // Event listeners
 addTaskBtn.addEventListener('click', addTask);
 
