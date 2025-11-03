@@ -99,6 +99,7 @@ function deleteTask(id) {
 }
 
 // Função para renderizar tarefas
+// Função para renderizar tarefas
 function renderTasks() {
     if (tasks.length === 0) {
         tasksList.innerHTML = `
@@ -109,10 +110,16 @@ function renderTasks() {
         `;
         return;
     }
-
+    
     tasksList.innerHTML = tasks.map(task => `
-        <div class="task-card ${getPriorityClass(task.priority)}">
-            <div class="task-priority">${getPriorityIcon(task.priority)} ${task.priority.toUpperCase()}</div>
+        <div class="task-card ${getPriorityClass(task.priority)} ${task.completed ? 'completed' : ''}">
+            <div class="task-header">
+                <div class="task-priority">${getPriorityIcon(task.priority)} ${task.priority.toUpperCase()}</div>
+                <label class="checkbox-container">
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTaskStatus(${task.id})">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
             <h3>${task.title}</h3>
             <p>${task.description || 'Sem descrição'}</p>
             <small style="color: #999;">Criado em: ${task.createdAt}</small>
@@ -122,7 +129,6 @@ function renderTasks() {
         </div>
     `).join('');
 }
-
 // Sistema de filtro de tarefas
 const filterInput = document.getElementById('filterInput');
 
