@@ -168,3 +168,14 @@ footer p {
     font-size: 14px;
     opacity: 0.8;
 }
+
+input.error {
+    border-color: #dc3545 !important;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
