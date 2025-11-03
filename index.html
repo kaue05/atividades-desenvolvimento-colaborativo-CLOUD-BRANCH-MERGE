@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Tarefas - TeamWork</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>📋 TeamWork - Gerenciador de Tarefas</h1>
+        <p class="subtitle">Organize suas tarefas em equipe</p>
+    </header>
+
+    <main class="container">
+        <section class="add-task-section">
+            <h2>Nova Tarefa</h2>
+            <div class="form-group">
+                <input type="text" id="taskTitle" placeholder="Título da tarefa">
+            </div>
+            <div class="form-group">
+                <textarea id="taskDescription" placeholder="Descrição da tarefa" rows="3"></textarea>
+            </div>
+            <button id="addTaskBtn" class="btn-primary">Adicionar Tarefa</button>
+        </section>
+
+        <section class="tasks-section">
+            <h2>Minhas Tarefas</h2>
+            <div id="tasksList" class="tasks-list"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Sistema em desenvolvimento - v1.0.0</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
