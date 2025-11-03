@@ -126,20 +126,22 @@ function renderTasks() {
 // Sistema de filtro de tarefas
 const filterInput = document.getElementById('filterInput');
 
+// Sistema de filtro de tarefas
 function filterTasks() {
     const searchTerm = filterInput.value.toLowerCase().trim();
-
+    
     if (!searchTerm) {
         renderTasks();
         return;
     }
-
+    
     const filteredTasks = tasks.filter(task => {
         const titleMatch = task.title.toLowerCase().includes(searchTerm);
         const descriptionMatch = task.description.toLowerCase().includes(searchTerm);
-        return titleMatch || descriptionMatch;
+        const priorityMatch = task.priority.toLowerCase().includes(searchTerm);
+        return titleMatch || descriptionMatch || priorityMatch;
     });
-
+    
     // Renderizar apenas tarefas filtradas
     if (filteredTasks.length === 0) {
         tasksList.innerHTML = `
@@ -150,18 +152,17 @@ function filterTasks() {
         `;
         return;
     }
-
+    
     tasksList.innerHTML = filteredTasks.map(task => `
-        <div class="task-card">
-            <h3>${task.title}</h3>
-            <p>${task.description || 'Sem descrição'}</p>
-            <small style="color: #999;">Criado em: ${task.createdAt}</small>
-            <div class="task-actions">
-                <button class="btn-delete" onclick="deleteTask(${task.id})">🗑️ Excluir</button>
+        <div class="task-card ${getPriorityClass(task.priority)} ${task.completed ? 'completed' : ''}">
+            <div class="task-header">
+                <div class="task-priority">${getPriorityIcon(task.priority)} ${task.priority.toUpperCase()}</div>
+                <label class="checkbox-container">
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTaskStatus(${task.id})">
+                    <span class="checkmark"></span>
+                </label>
             </div>
-        </div>
-    `).join('');
-}
+            <h3>${task.title}</h3>
 
 filterInput.addEventListener('input', filterTasks);
 
@@ -176,3 +177,12 @@ taskTitle.addEventListener('keypress', (e) => {
 
 // Renderizar tarefas ao iniciar
 renderTasks();
+
+<p>${task.description || 'Sem descrição'}</p>
+            <small style="color: #999;">Criado em: ${task.createdAt}</small>
+            <div class="task-actions">
+                <button class="btn-delete" onclick="deleteTask(${task.id})">🗑️ Excluir</button>
+            </div>
+        </div>
+    `).join('');
+}
