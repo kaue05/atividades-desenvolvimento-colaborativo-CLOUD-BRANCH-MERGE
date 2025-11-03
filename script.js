@@ -13,7 +13,16 @@ function addTask() {
     const description = taskDescription.value.trim();
 
     if (!title) {
-        alert('Por favor, adicione um título para a tarefa!');
+        // Melhorar feedback visual
+        taskTitle.style.borderColor = '#dc3545';
+        taskTitle.placeholder = '⚠️ O título é obrigatório!';
+        taskTitle.focus();
+
+        setTimeout(() => {
+            taskTitle.style.borderColor = '';
+            taskTitle.placeholder = 'Título da tarefa';
+        }, 3000);
+
         return;
     }
 
