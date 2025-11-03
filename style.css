@@ -196,3 +196,14 @@ input.error {
     25% { transform: translateX(-10px); }
     75% { transform: translateX(10px); }
 }
+
+.task-card.deleting {
+    animation: slideOut 0.3s forwards;
+}
+
+@keyframes slideOut {
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

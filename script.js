@@ -45,14 +45,29 @@ function addTask() {
 // Função para deletar tarefa
 function deleteTask(id) {
     if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
-        tasks = tasks.filter(task => task.id !== id);
+        // Adicionar animação antes de deletar
+        const taskElement = event.target.closest('.task-card');
+        if (taskElement) {
+            taskElement.classList.add('deleting');
+            setTimeout(() => {
+                tasks = tasks.filter(task => task.id !== id);
 
-        // Verificar se há filtro ativo
-        const filterValue = document.getElementById('filterInput').value;
-        if (filterValue.trim()) {
-            filterTasks();
+                // Verificar se há filtro ativo
+                const filterValue = document.getElementById('filterInput').value;
+                if (filterValue.trim()) {
+                    filterTasks();
+                } else {
+                    renderTasks();
+                }
+            }, 300);
         } else {
-            renderTasks();
+            tasks = tasks.filter(task => task.id !== id);
+            const filterValue = document.getElementById('filterInput').value;
+            if (filterValue.trim()) {
+                filterTasks();
+            } else {
+                renderTasks();
+            }
         }
     }
 }
