@@ -100,7 +100,6 @@ function deleteTask(id) {
 }
 
 // Função para renderizar tarefas
-// Função para renderizar tarefas
 function renderTasks() {
     if (tasks.length === 0) {
         tasksList.innerHTML = `
