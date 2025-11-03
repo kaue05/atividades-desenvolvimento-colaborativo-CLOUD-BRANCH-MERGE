@@ -218,3 +218,50 @@ label {
     color: #333;
     font-weight: 600;
 }
+
+.task-card.deleting {
+    animation: slideOut 0.3s forwards;
+}
+
+@keyframes slideOut {
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.task-priority {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.task-card.priority-alta {
+    border-left-color: #dc3545;
+}
+
+.task-card.priority-alta .task-priority {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.task-card.priority-media {
+    border-left-color: #ffc107;
+}
+
+.task-card.priority-media .task-priority {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.task-card.priority-baixa {
+    border-left-color: #28a745;
+}
+
+.task-card.priority-baixa .task-priority {
+    background-color: #d4edda;
+    color: #155724;
+}
