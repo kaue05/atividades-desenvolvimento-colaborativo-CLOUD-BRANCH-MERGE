@@ -21,6 +21,14 @@
             <div class="form-group">
                 <textarea id="taskDescription" placeholder="Descrição da tarefa" rows="3"></textarea>
             </div>
+            <div class="form-group">
+                <label for="taskPriority">Prioridade:</label>
+                <select id="taskPriority">
+                    <option value="baixa">🟢 Baixa</option>
+                    <option value="media" selected>🟡 Média</option>
+                    <option value="alta">🔴 Alta</option>
+                </select>
+            </div>
             <button id="addTaskBtn" class="btn-primary">Adicionar Tarefa</button>
         </section>
 
