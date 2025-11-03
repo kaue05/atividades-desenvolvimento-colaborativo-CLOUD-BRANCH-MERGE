@@ -46,7 +46,14 @@ function addTask() {
 function deleteTask(id) {
     if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
         tasks = tasks.filter(task => task.id !== id);
-        renderTasks();
+
+        // Verificar se há filtro ativo
+        const filterValue = document.getElementById('filterInput').value;
+        if (filterValue.trim()) {
+            filterTasks();
+        } else {
+            renderTasks();
+        }
     }
 }
 
