@@ -265,3 +265,10 @@ label {
     background-color: #d4edda;
     color: #155724;
 }
+
+mark {
+    background-color: #ffeb3b;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}

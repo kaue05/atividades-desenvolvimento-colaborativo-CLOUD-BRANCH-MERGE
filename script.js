@@ -186,3 +186,10 @@ renderTasks();
         </div>
     `).join('');
 }
+
+// Função para destacar termo buscado
+function highlightSearchTerm(text, searchTerm) {
+    if (!searchTerm) return text;
+    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+}
